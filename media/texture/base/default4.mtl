@@ -1,5 +1,0 @@
-setshader "bumpspecmapworld"
-setshaderparam "specscale" 1 1 1
-   texture 0 "base/default4.png"
-   texture n "base/default0_normal.png"
-   texture s "base/default_spec.png"
