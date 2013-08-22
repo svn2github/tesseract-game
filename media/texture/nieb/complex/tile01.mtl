@@ -1,0 +1,6 @@
+setshader "bumpenvspecmapworld"
+setshaderparam "specscale" 0.5 0.5 0.5
+setshaderparam "envscale"  0.4 0.4 0.4
+   texture 0 "nieb/complex/tile01.png"
+   texture n "nieb/complex/tile01_normal.png"
+   texture s "nieb/complex/tile01_spec.png"
