@@ -67,8 +67,6 @@ joints {
 }
 
 mesh {
-	shader "D:\Users\Nieb\Desktop\MDL Player\Player\color_2013-10-09\0.png"
-
 	numverts 3170
 	vert 0 ( 0.5485260009 0.5789909839 ) 0 4
 	vert 1 ( 0.5262550354 0.5696420192 ) 4 6
