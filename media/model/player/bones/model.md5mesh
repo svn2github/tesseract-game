@@ -67,7 +67,6 @@ joints {
 }
 
 mesh {
-	shader "D:\Users\Nieb\MISC\My Work\proj_Tesseract\_MODEL\_player\Bones\Player\_OLD_\2013-12-12_tb\diffuse.png"
 
 	numverts 3189
 	vert 0 ( 0.5492429733 0.5801609992 ) 0 6
