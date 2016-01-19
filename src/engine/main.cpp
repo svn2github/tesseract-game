@@ -522,23 +522,16 @@ void setupscreen()
     SDL_SetWindowMinimumSize(screen, SCR_MINW, SCR_MINH);
     SDL_SetWindowMaximumSize(screen, SCR_MAXW, SCR_MAXH);
 
-    static const struct { int major, minor; } coreversions[] = { { 4, 0 }, { 3, 3 }, { 3, 2 }, { 3, 1 }, { 3, 0 } };
-    loopi(sizeof(coreversions)/sizeof(coreversions[0]))
+    static const struct { int major, minor; } glversions[] = { { 4, 0 }, { 3, 3 }, { 3, 2 }, { 3, 1 }, { 3, 0 }, { 2, 1 } };
+    loopi(sizeof(glversions)/sizeof(glversions[0]))
     {
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, coreversions[i].major);
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, coreversions[i].minor);
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, glversions[i].major);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, glversions[i].minor);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, glversions[i].major >= 3 ? SDL_GL_CONTEXT_PROFILE_CORE : 0);
         glcontext = SDL_GL_CreateContext(screen);
         if(glcontext) break;
     }
-    if(!glcontext)
-    {
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, 0);
-        glcontext = SDL_GL_CreateContext(screen);
-        if(!glcontext) fatal("failed to create OpenGL context: %s", SDL_GetError());
-    }
+    if(!glcontext) fatal("failed to create OpenGL context: %s", SDL_GetError());
 
     SDL_GetWindowSize(screen, &screenw, &screenh);
     renderw = min(scr_w, screenw);
