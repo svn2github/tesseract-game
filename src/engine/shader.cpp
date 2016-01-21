@@ -871,36 +871,6 @@ static void gengenericvariant(Shader &s, const char *sname, const char *vs, cons
     newshader(s.type, varname, vschanged ? vsv.getbuf() : reuse, pschanged ? psv.getbuf() : reuse, &s, row);
 }
 
-static void genswizzle(Shader &s, const char *sname, const char *ps, int row = 0)
-{
-    if(!hasTRG || hasTSW) return;
-    static const int pragmalen = strlen("#pragma CUBE2_swizzle");
-    const char *pspragma = strstr(ps, "#pragma CUBE2_swizzle");
-    if(!pspragma) return;
-
-    int clen = 0;
-    const char *cname = pspragma + pragmalen;
-    while(iscubealpha(*cname)) cname++;
-    while(*cname && !iscubespace(*cname)) cname++;
-    cname += strspn(cname, " \t\v\f");
-    clen = strcspn(cname, "\r\n");
-
-    string reuse;
-    if(s.numvariants(row)) formatstring(reuse, "%d", row);
-    else copystring(reuse, "");
-
-    loopi(2)
-    {
-        vector<char> pswz;
-        pswz.put(ps, int(pspragma-ps));
-        pswz.put(cname, clen); pswz.put(" = ", 3); pswz.put(cname, clen); pswz.put(i ? ".rrrg;" : ".rrra;", 6);
-        pswz.put(cname+clen, strlen(cname+clen)+1);
-
-        defformatstring(varname, "<variant:%d,%d>%s", s.numvariants(row), row, sname);
-        newshader(s.type, varname, reuse, pswz.getbuf(), &s, row);
-    }
-}
-
 static void genfogshader(vector<char> &vsbuf, vector<char> &psbuf, const char *vs, const char *ps)
 {
     const char *vspragma = strstr(vs, "#pragma CUBE2_fog"), *pspragma = strstr(ps, "#pragma CUBE2_fog");
@@ -1030,10 +1000,8 @@ void setupshaders()
         "fragdata(0, fragcolor, vec4)\n"
         "void main(void) {\n"
         "    vec4 color = texture2D(tex0, texcoord0);\n"
-        "    #pragma CUBE2_swizzle color\n"
         "    fragcolor = colorscale * color;\n"
         "}\n");
-    if(hudshader) genswizzle(*hudshader, hudshader->name, hudshader->psstr);
     hudtextshader = newshader(0, "<init>hudtext",
         "attribute vec4 vvertex, vcolor;\n"
         "attribute vec2 vtexcoord0;\n"
@@ -1159,7 +1127,6 @@ void shader(int *type, char *name, char *vs, char *ps)
     if(s)
     {
         if(strstr(ps, "#pragma CUBE2_variant") || strstr(vs, "#pragma CUBE2_variant")) gengenericvariant(*s, name, vs, ps);
-        if(strstr(ps, "#pragma CUBE2_swizzle")) genswizzle(*s, name, ps);
     }
     slotparams.shrink(0);
 }
@@ -1190,7 +1157,6 @@ void variantshader(int *type, char *name, int *row, char *vs, char *ps, int *max
     if(v)
     {
         if(strstr(ps, "#pragma CUBE2_variant") || strstr(vs, "#pragma CUBE2_variant")) gengenericvariant(*s, varname, vs, ps, *row);
-        if(strstr(ps, "#pragma CUBE2_swizzle")) genswizzle(*s, varname, ps, *row);
     }
 }
 COMMAND(variantshader, "isissi");

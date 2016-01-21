@@ -1070,6 +1070,8 @@ static Texture *newtexture(Texture *t, const char *rname, ImageData &s, int clam
         t->w = t->h = t->xs = t->ys = t->bpp = 0;
         return t;
     }
+
+    bool swizzle = !(clamp&0x10000);
     GLenum format;
     if(s.compressed)
     {
@@ -1081,13 +1083,18 @@ static Texture *newtexture(Texture *t, const char *rname, ImageData &s, int clam
     {
         format = texformat(s.bpp);
         t->bpp = s.bpp;
+        if(swizzle && hasTRG && !hasTSW && swizzlemask(format))
+        {
+            swizzleimage(s);
+            format = texformat(s.bpp);
+            t->bpp = s.bpp;
+        }
     }
     if(alphaformat(format)) t->type |= Texture::ALPHA;
     t->w = t->xs = s.w;
     t->h = t->ys = s.h;
 
     int filter = !canreduce || reducefilter ? (mipit ? 2 : 1) : 0;
-    bool swizzle = !(clamp&0x10000);
     glGenTextures(1, &t->id);
     if(s.compressed)
     {
