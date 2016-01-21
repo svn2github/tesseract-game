@@ -525,9 +525,10 @@ void setupscreen()
     static const struct { int major, minor; } glversions[] = { { 4, 0 }, { 3, 3 }, { 3, 2 }, { 3, 1 }, { 3, 0 }, { 2, 1 } };
     loopi(sizeof(glversions)/sizeof(glversions[0]))
     {
+        glcompat = glversions[i].major < 3 ? 1 : 0;
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, glversions[i].major);
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, glversions[i].minor);
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, glversions[i].major >= 3 ? SDL_GL_CONTEXT_PROFILE_CORE : 0);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, glcompat ? 0 : SDL_GL_CONTEXT_PROFILE_CORE); 
         glcontext = SDL_GL_CreateContext(screen);
         if(glcontext) break;
     }
