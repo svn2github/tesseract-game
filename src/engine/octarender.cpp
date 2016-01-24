@@ -1721,6 +1721,8 @@ void precachetextures()
 
 void allchanged(bool load)
 {
+    if(mainmenu && !isconnected()) load = false;
+    if(load) initlights();
     renderprogress(0, "clearing vertex arrays...");
     clearvas(worldroot);
     resetqueries();

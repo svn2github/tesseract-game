@@ -869,7 +869,6 @@ bool load_world(const char *mname, const char *cname)        // still supports a
 
     entitiesinoctanodes();
     attachentities();
-    initlights();
     allchanged(true);
 
     renderbackground("loading...", mapshot, mname, game::getmapinfo());

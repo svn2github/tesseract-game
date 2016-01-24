@@ -584,7 +584,6 @@ void resetgl()
     initgbuffer();
     reloadshaders();
     reloadtextures();
-    initlights();
     allchanged(true);
 }
 

@@ -1044,6 +1044,7 @@ void gl_checkextensions()
             batchsunlight = 0; // causes massive slowdown in linux driver
             if(!checkmesaversion(version, 10, 0, 3))
                 mesa_texrectoffset_bug = 1; // mesa i965 driver has buggy textureOffset with texture rectangles
+            msaalineardepth = 1; // MSAA depth texture access is buggy and resolves are slow
         }
         else
         {
@@ -2211,7 +2212,7 @@ void drawcubemap(int size, const vec &o, float yaw, float pitch, const cubemapsi
     ldrscale = 1;
     ldrscaleb = ldrscale/255;
 
-    visiblecubes(onlysky);
+    visiblecubes();
 
     if(onlysky)
     {
