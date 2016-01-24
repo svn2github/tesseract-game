@@ -361,7 +361,7 @@ static void linkglslprogram(Shader &s, bool msg = true)
             attribs |= 1<<a.loc;
         }
         loopi(gle::MAXATTRIBS) if(!(attribs&(1<<i))) glBindAttribLocation_(s.program, i, gle::attribnames[i]);
-        if((glslversion >= 130 || hasEGPU4) && ((glslversion < 330 && (glslversion < 150 || !hasEAL)) || amd_eal_bug)) loopv(s.fragdatalocs)
+        if(hasGPU4 && ((glslversion < 330 && (glslversion < 150 || !hasEAL)) || amd_eal_bug)) loopv(s.fragdatalocs)
         {
             FragDataLoc &d = s.fragdatalocs[i];
             if(d.index)
@@ -958,7 +958,7 @@ void setupshaders()
     maxvsuniforms = val/4;
     glGetIntegerv(GL_MAX_FRAGMENT_UNIFORM_COMPONENTS, &val);
     maxfsuniforms = val/4;
-    if(glslversion >= 130 || hasGPU4)
+    if(hasGPU4)
     {
         glGetIntegerv(GL_MIN_PROGRAM_TEXEL_OFFSET, &val);
         mintexoffset = val;
