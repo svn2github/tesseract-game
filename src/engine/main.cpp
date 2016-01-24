@@ -338,7 +338,9 @@ void renderprogress(float bar, const char *text, bool background)   // also used
     getbackgroundres(w, h);
     gettextres(w, h);
 
-    if(background) restorebackground(w, h);
+    extern int mesa_vsync_bug, curvsync;
+    if(background || (mesa_vsync_bug && curvsync)) restorebackground(w, h);
+
     renderprogressview(w, h, bar, text);
     swapbuffers(false);
 }
@@ -469,11 +471,13 @@ void cleargamma()
     if(curgamma != 100 && screen) SDL_SetWindowBrightness(screen, 1.0f);
 }
 
+int curvsync = -1;
 void restorevsync()
 {
     if(initing || !glcontext) return;
     extern int vsync, vsynctear;
-    SDL_GL_SetSwapInterval(vsync ? (vsynctear ? -1 : 1) : 0);
+    if(!SDL_GL_SetSwapInterval(vsync ? (vsynctear ? -1 : 1) : 0))
+        curvsync = vsync;
 }
 
 VARFP(vsync, 0, 0, 1, restorevsync());
@@ -493,6 +497,7 @@ void setupscreen()
         SDL_DestroyWindow(screen);
         screen = NULL;
     }
+    curvsync = -1;
 
     SDL_DisplayMode desktop;
     if(SDL_GetDesktopDisplayMode(0, &desktop) < 0) fatal("failed querying desktop display mode: %s", SDL_GetError());
@@ -1011,7 +1016,6 @@ int main(int argc, char **argv)
             case 'd': dedicated = atoi(&argv[i][2]); if(dedicated<=0) dedicated = 2; break;
             case 'w': scr_w = clamp(atoi(&argv[i][2]), SCR_MINW, SCR_MAXW); if(!findarg(argc, argv, "-h")) scr_h = -1; break;
             case 'h': scr_h = clamp(atoi(&argv[i][2]), SCR_MINH, SCR_MAXH); if(!findarg(argc, argv, "-w")) scr_w = -1; break;
-            case 'v': vsync = atoi(&argv[i][2]); if(vsync < 0) { vsynctear = 1; vsync = 1; } else vsynctear = 0; break;
             case 'f': fullscreen = atoi(&argv[i][2]); break;
             case 'l':
             {
