@@ -522,7 +522,7 @@ void setupscreen()
     SDL_SetWindowMinimumSize(screen, SCR_MINW, SCR_MINH);
     SDL_SetWindowMaximumSize(screen, SCR_MAXW, SCR_MAXH);
 
-    static const struct { int major, minor; } glversions[] = { { 4, 0 }, { 3, 3 }, { 3, 2 }, { 3, 1 }, { 3, 0 }, { 2, 1 } };
+    static const struct { int major, minor; } glversions[] = { { 4, 0 }, { 3, 3 }, { 3, 2 }, { 3, 1 }, { 3, 0 }, { 2, 0 } };
     loopi(sizeof(glversions)/sizeof(glversions[0]))
     {
         glcompat = glversions[i].major < 3 ? 1 : 0;
