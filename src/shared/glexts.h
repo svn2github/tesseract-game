@@ -1,3 +1,10 @@
+#ifndef APIENTRY
+#define APIENTRY
+#endif
+#ifndef APIENTRYP
+#define APIENTRYP APIENTRY *
+#endif
+
 // GL_EXT_timer_query
 #ifndef GL_EXT_timer_query
 #define GL_EXT_timer_query 1
