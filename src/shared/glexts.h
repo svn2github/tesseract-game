@@ -5,14 +5,12 @@
 #define APIENTRYP APIENTRY *
 #endif
 
-// GL_EXT_texture_filter_anisotropic
 #ifndef GL_EXT_texture_filter_anisotropic
 #define GL_EXT_texture_filter_anisotropic 1
 #define GL_TEXTURE_MAX_ANISOTROPY_EXT     0x84FE
 #define GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT 0x84FF
 #endif
 
-// GL_EXT_texture_compression_s3tc
 #ifndef GL_EXT_texture_compression_s3tc
 #define GL_EXT_texture_compression_s3tc 1
 #define GL_COMPRESSED_RGB_S3TC_DXT1_EXT   0x83F0
@@ -21,7 +19,6 @@
 #define GL_COMPRESSED_RGBA_S3TC_DXT5_EXT  0x83F3
 #endif 
 
-// GL_EXT_timer_query
 #ifndef GL_EXT_timer_query
 #define GL_EXT_timer_query 1
 #define GL_TIME_ELAPSED_EXT               0x88BF
@@ -33,7 +30,6 @@ typedef void (APIENTRYP PFNGLGETQUERYOBJECTUI64VEXTPROC) (GLuint id, GLenum pnam
 extern PFNGLGETQUERYOBJECTI64VEXTPROC glGetQueryObjecti64v_;
 extern PFNGLGETQUERYOBJECTUI64VEXTPROC glGetQueryObjectui64v_;
 
-// GL_ARB_framebuffer_object
 #ifndef GL_ARB_framebuffer_object
 #define GL_ARB_framebuffer_object 1
 #define GL_INVALID_FRAMEBUFFER_OPERATION  0x0506
@@ -157,7 +153,6 @@ extern PFNGLBLITFRAMEBUFFERPROC         glBlitFramebuffer_;
 // GL_EXT_framebuffer_multisample
 extern PFNGLRENDERBUFFERSTORAGEMULTISAMPLEPROC glRenderbufferStorageMultisample_;
 
-// GL_ARB_texture_multisample
 #ifndef GL_ARB_texture_multisample
 #define GL_ARB_texture_multisample 1
 #define GL_SAMPLE_POSITION                0x8E50
@@ -191,14 +186,12 @@ extern PFNGLTEXIMAGE3DMULTISAMPLEPROC glTexImage3DMultisample_;
 extern PFNGLGETMULTISAMPLEFVPROC      glGetMultisamplefv_;
 extern PFNGLSAMPLEMASKIPROC           glSampleMaski_;
 
-// GL_EXT_framebuffer_multisample_blit_scaled
 #ifndef GL_EXT_framebuffer_multisample_blit_scaled
 #define GL_EXT_framebuffer_multisample_blit_scaled 1
 #define GL_SCALED_RESOLVE_FASTEST_EXT     0x90BA
 #define GL_SCALED_RESOLVE_NICEST_EXT      0x90BB
 #endif
 
-// GL_ARB_texture_rg
 #ifndef GL_ARB_texture_rg
 #define GL_ARB_texture_rg 1
 #define GL_RG                             0x8227
@@ -225,14 +218,12 @@ extern PFNGLSAMPLEMASKIPROC           glSampleMaski_;
 #define GL_RG32UI                         0x823C
 #endif
 
-// GL_EXT_texture_compression_latc
 #ifndef GL_EXT_texture_compression_latc
 #define GL_EXT_texture_compression_latc 1
 #define GL_COMPRESSED_LUMINANCE_LATC1_EXT              0x8C70
 #define GL_COMPRESSED_LUMINANCE_ALPHA_LATC2_EXT        0x8C72
 #endif
 
-// GL_ARB_texture_compression_rgtc
 #ifndef GL_ARB_texture_compression_rgtc
 #define GL_ARB_texture_compression_rgtc 1
 #define GL_COMPRESSED_RED_RGTC1           0x8DBB
@@ -242,7 +233,6 @@ extern PFNGLSAMPLEMASKIPROC           glSampleMaski_;
 // GL_EXT_depth_bounds_test
 extern PFNGLDEPTHBOUNDSEXTPROC glDepthBounds_;
 
-// GL_ARB_map_buffer_range
 #ifndef GL_ARB_map_buffer_range
 #define GL_ARB_map_buffer_range 1
 #define GL_MAP_READ_BIT                   0x0001
@@ -532,17 +522,22 @@ extern PFNGLDRAWBUFFERSPROC glDrawBuffers_;
 #define GL_UNIFORM_BLOCK_REFERENCED_BY_GEOMETRY_SHADER 0x8A45
 #define GL_UNIFORM_BLOCK_REFERENCED_BY_FRAGMENT_SHADER 0x8A46
 #define GL_INVALID_INDEX                  0xFFFFFFFFu
-
 typedef void (APIENTRYP PFNGLGETUNIFORMINDICESPROC) (GLuint program, GLsizei uniformCount, const GLchar* *uniformNames, GLuint *uniformIndices);
 typedef void (APIENTRYP PFNGLGETACTIVEUNIFORMSIVPROC) (GLuint program, GLsizei uniformCount, const GLuint *uniformIndices, GLenum pname, GLint *params);
 typedef GLuint (APIENTRYP PFNGLGETUNIFORMBLOCKINDEXPROC) (GLuint program, const GLchar *uniformBlockName);
 typedef void (APIENTRYP PFNGLGETACTIVEUNIFORMBLOCKIVPROC) (GLuint program, GLuint uniformBlockIndex, GLenum pname, GLint *params);
 typedef void (APIENTRYP PFNGLUNIFORMBLOCKBINDINGPROC) (GLuint program, GLuint uniformBlockIndex, GLuint uniformBlockBinding);
 #endif
-
 #ifndef GL_INVALID_INDEX
 #define GL_INVALID_INDEX                  0xFFFFFFFFu
 #endif
+extern PFNGLGETUNIFORMINDICESPROC       glGetUniformIndices_;
+extern PFNGLGETACTIVEUNIFORMSIVPROC     glGetActiveUniformsiv_;
+extern PFNGLGETUNIFORMBLOCKINDEXPROC    glGetUniformBlockIndex_;
+extern PFNGLGETACTIVEUNIFORMBLOCKIVPROC glGetActiveUniformBlockiv_;
+extern PFNGLUNIFORMBLOCKBINDINGPROC     glUniformBlockBinding_;
+extern PFNGLBINDBUFFERBASEPROC          glBindBufferBase_;
+extern PFNGLBINDBUFFERRANGEPROC         glBindBufferRange_;
 
 #ifndef GL_VERSION_3_0
 #define GL_VERSION_3_0 1
@@ -618,6 +613,12 @@ typedef void (APIENTRYP PFNGLBINDBUFFERBASEPROC) (GLenum target, GLuint index, G
 #endif
 
 extern PFNGLGETSTRINGIPROC glGetStringi_;
+extern PFNGLCLEARBUFFERIVPROC glClearBufferiv_;
+extern PFNGLCLEARBUFFERUIVPROC glClearBufferuiv_;
+extern PFNGLCLEARBUFFERFVPROC glClearBufferfv_;
+extern PFNGLCLEARBUFFERFIPROC glClearBufferfi_;
+
+// GL_EXT_gpu_shader4
 extern PFNGLBINDFRAGDATALOCATIONPROC glBindFragDataLocation_;
 extern PFNGLUNIFORM1UIPROC glUniform1ui_;
 extern PFNGLUNIFORM2UIPROC glUniform2ui_;
@@ -627,10 +628,6 @@ extern PFNGLUNIFORM1UIVPROC glUniform1uiv_;
 extern PFNGLUNIFORM2UIVPROC glUniform2uiv_;
 extern PFNGLUNIFORM3UIVPROC glUniform3uiv_;
 extern PFNGLUNIFORM4UIVPROC glUniform4uiv_;
-extern PFNGLCLEARBUFFERIVPROC glClearBufferiv_;
-extern PFNGLCLEARBUFFERUIVPROC glClearBufferuiv_;
-extern PFNGLCLEARBUFFERFVPROC glClearBufferfv_;
-extern PFNGLCLEARBUFFERFIPROC glClearBufferfi_;
 
 // GL_EXT_draw_buffers2
 extern PFNGLCOLORMASKIPROC glColorMaski_;
@@ -641,7 +638,9 @@ extern PFNGLDISABLEIPROC glDisablei_;
 extern PFNGLBEGINCONDITIONALRENDERPROC glBeginConditionalRender_;
 extern PFNGLENDCONDITIONALRENDERPROC glEndConditionalRender_;
 
-// GL_EXT_texture_integer
+// GL_ARB_color_buffer_float
+extern PFNGLCLAMPCOLORPROC glClampColor_;
+
 #ifndef GL_EXT_texture_integer
 #define GL_EXT_texture_integer 1
 typedef void (APIENTRYP PFNGLCLEARCOLORIIEXTPROC) (GLint red, GLint green, GLint blue, GLint alpha);
@@ -668,19 +667,6 @@ extern PFNGLCLEARCOLORIUIEXTPROC glClearColorIui_;
 #define GL_MAX_RECTANGLE_TEXTURE_SIZE     0x84F8
 #endif
 
-// GL_ARB_color_buffer_float
-extern PFNGLCLAMPCOLORPROC glClampColor_;
-
-// GL_ARB_uniform_buffer_object
-extern PFNGLGETUNIFORMINDICESPROC       glGetUniformIndices_;
-extern PFNGLGETACTIVEUNIFORMSIVPROC     glGetActiveUniformsiv_;
-extern PFNGLGETUNIFORMBLOCKINDEXPROC    glGetUniformBlockIndex_;
-extern PFNGLGETACTIVEUNIFORMBLOCKIVPROC glGetActiveUniformBlockiv_;
-extern PFNGLUNIFORMBLOCKBINDINGPROC     glUniformBlockBinding_;
-extern PFNGLBINDBUFFERBASEPROC          glBindBufferBase_;
-extern PFNGLBINDBUFFERRANGEPROC         glBindBufferRange_;
-
-// GL_ARB_copy_buffer
 #ifndef GL_ARB_copy_buffer
 #define GL_ARB_copy_buffer 1
 #define GL_COPY_READ_BUFFER_BINDING       0x8F36
@@ -691,7 +677,6 @@ typedef void (APIENTRYP PFNGLCOPYBUFFERSUBDATAPROC) (GLenum readTarget, GLenum w
 #endif
 extern PFNGLCOPYBUFFERSUBDATAPROC glCopyBufferSubData_;
 
-// GL_ARB_vertex_array_objext
 #ifndef GL_ARB_vertex_array_object
 #define GL_ARB_vertex_array_object 1
 #define GL_VERTEX_ARRAY_BINDING           0x85B5
@@ -724,7 +709,6 @@ extern PFNGLISVERTEXARRAYPROC      glIsVertexArray_;
 #define GL_ANY_SAMPLES_PASSED             0x8C2F
 #endif
 
-// GL_ARB_blend_func_extended
 #ifndef GL_ARB_blend_func_extended
 #define GL_ARB_blend_func_extended 1
 #define GL_SRC1_COLOR                     0x88F9
