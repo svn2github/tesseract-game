@@ -538,13 +538,13 @@ void setupscreen()
     SDL_SetWindowMinimumSize(screen, SCR_MINW, SCR_MINH);
     SDL_SetWindowMaximumSize(screen, SCR_MAXW, SCR_MAXH);
 
-    static const struct { int major, minor; } glversions[] = { { 4, 0 }, { 3, 3 }, { 3, 2 }, { 3, 1 }, { 3, 0 }, { 2, 0 } };
+    static const int glversions[] = { 40, 33, 32, 31, 30, 20 };
     loopi(sizeof(glversions)/sizeof(glversions[0]))
     {
-        glcompat = glversions[i].major < 3 ? 1 : 0;
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, glversions[i].major);
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, glversions[i].minor);
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, glcompat ? 0 : SDL_GL_CONTEXT_PROFILE_CORE); 
+        glcompat = glversions[i] <= 30 ? 1 : 0;
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, glversions[i] / 10);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, glversions[i] % 10);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, glversions[i] >= 32 ? SDL_GL_CONTEXT_PROFILE_CORE : 0); 
         glcontext = SDL_GL_CreateContext(screen);
         if(glcontext) break;
     }
