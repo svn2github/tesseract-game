@@ -235,6 +235,19 @@ void renderbackgroundview(int w, int h, const char *caption, Texture *mapshot, c
 
 VAR(menumute, 0, 1, 1);
 
+void setbackgroundinfo(const char *caption = NULL, Texture *mapshot = NULL, const char *mapname = NULL, const char *mapinfo = NULL)
+{
+    renderedframe = false;
+    copystring(backgroundcaption, caption ? caption : "");
+    backgroundmapshot = mapshot;
+    copystring(backgroundmapname, mapname ? mapname : "");
+    if(mapinfo != backgroundmapinfo)
+    {
+        DELETEA(backgroundmapinfo);
+        if(mapinfo) backgroundmapinfo = newstring(mapinfo);
+    }
+}
+
 void renderbackground(const char *caption, Texture *mapshot, const char *mapname, const char *mapinfo, bool force)
 {
     if(!inbetweenframes && !force) return;
@@ -258,20 +271,16 @@ void renderbackground(const char *caption, Texture *mapshot, const char *mapname
         swapbuffers(false);
     }
 
-    renderedframe = false;
-    copystring(backgroundcaption, caption ? caption : "");
-    backgroundmapshot = mapshot;
-    copystring(backgroundmapname, mapname ? mapname : "");
-    if(mapinfo != backgroundmapinfo)
-    {
-        DELETEA(backgroundmapinfo);
-        if(mapinfo) backgroundmapinfo = newstring(mapinfo);
-    }
+    setbackgroundinfo(caption, mapshot, mapname, mapinfo);
 }
 
-void restorebackground(int w, int h)
+void restorebackground(int w, int h, bool force = false)
 {
-    if(renderedframe) return;
+    if(renderedframe)
+    {
+        if(!force) return;
+        setbackgroundinfo();
+    }
     renderbackgroundview(w, h, backgroundcaption[0] ? backgroundcaption : NULL, backgroundmapshot, backgroundmapname[0] ? backgroundmapname : NULL, backgroundmapinfo);
 }
 
@@ -339,7 +348,8 @@ void renderprogress(float bar, const char *text, bool background)   // also used
     gettextres(w, h);
 
     extern int mesa_vsync_bug, curvsync;
-    if(background || (mesa_vsync_bug && curvsync)) restorebackground(w, h);
+    bool forcebackground = mesa_vsync_bug && curvsync;
+    if(background || forcebackground) restorebackground(w, h, forcebackground);
 
     renderprogressview(w, h, bar, text);
     swapbuffers(false);
