@@ -580,8 +580,6 @@ extern PFNGLGETACTIVEUNIFORMSIVPROC     glGetActiveUniformsiv_;
 extern PFNGLGETUNIFORMBLOCKINDEXPROC    glGetUniformBlockIndex_;
 extern PFNGLGETACTIVEUNIFORMBLOCKIVPROC glGetActiveUniformBlockiv_;
 extern PFNGLUNIFORMBLOCKBINDINGPROC     glUniformBlockBinding_;
-extern PFNGLBINDBUFFERBASEPROC          glBindBufferBase_;
-extern PFNGLBINDBUFFERRANGEPROC         glBindBufferRange_;
 
 #ifndef GL_VERSION_3_0
 #define GL_VERSION_3_0 1
@@ -657,6 +655,8 @@ typedef void (APIENTRYP PFNGLBINDBUFFERBASEPROC) (GLenum target, GLuint index, G
 #endif
 
 extern PFNGLGETSTRINGIPROC glGetStringi_;
+extern PFNGLBINDBUFFERBASEPROC glBindBufferBase_;
+extern PFNGLBINDBUFFERRANGEPROC glBindBufferRange_;
 extern PFNGLCLEARBUFFERIVPROC glClearBufferiv_;
 extern PFNGLCLEARBUFFERUIVPROC glClearBufferuiv_;
 extern PFNGLCLEARBUFFERFVPROC glClearBufferfv_;
