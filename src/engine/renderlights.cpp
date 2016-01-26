@@ -463,7 +463,7 @@ VAR(msaamaxcolortexsamples, 1, 0, 0);
 VAR(msaaminsamples, 1, 0, 0);
 VAR(msaasamples, 1, 0, 0);
 VAR(msaalight, 1, 0, 0);
-VARF(msaapreserve, 0, 0, 1, initwarning("MSAA setup", INIT_LOAD, CHANGE_SHADERS));
+VARF(msaapreserve, -1, 0, 1, initwarning("MSAA setup", INIT_LOAD, CHANGE_SHADERS));
 
 void checkmsaasamples()
 {
@@ -522,7 +522,7 @@ void initgbuffer()
 
         checkmsaasamples();
 
-        msaalight = hasMSS ? 3 : (msaasamples==2 ? 2 : msaapreserve);
+        if(msaapreserve >= 0) msaalight = hasMSS ? 3 : (msaasamples==2 ? 2 : msaapreserve);
     }
     else ghasstencil = (gdepthstencil > 1 || (gdepthstencil && gdepthformat)) && hasDS ? 2 : (gstencil ? 1 : 0);
 
@@ -711,7 +711,7 @@ void setupmsbuffer(int w, int h)
     if(msaalight > 1 && msaatonemap)
     {
         useshaderbyname("msaatonemap");
-        if(hasMSS) useshaderbyname("msaatonemapsample");
+        if(msaalight > 2) useshaderbyname("msaatonemapsample");
     }
 }
 
@@ -831,7 +831,7 @@ void setupgbuffer()
     if(glCheckFramebufferStatus_(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
         fatal("failed allocating HDR buffer!");
 
-    if(!msaalight || (hasMSS && msaatonemap && msaatonemapblit))
+    if(!msaalight || (msaalight > 2 && msaatonemap && msaatonemapblit))
     {
         if(!refracttex) glGenTextures(1, &refracttex);
         if(!refractfbo) glGenFramebuffers_(1, &refractfbo);
@@ -1249,7 +1249,7 @@ void processhdr(GLuint outfbo, int aa)
     }
     else
     {
-        bool blit = hasMSS && msaatonemapblit && (!aa || !outfbo);
+        bool blit = msaalight > 2 && msaatonemapblit && (!aa || !outfbo);
 
         glBindFramebuffer_(GL_FRAMEBUFFER, blit ? msrefractfbo : outfbo);
         glViewport(0, 0, vieww, viewh);
@@ -2559,7 +2559,7 @@ void loaddeferredlightshaders()
     if(msaasamples)
     {
         string opts;
-        if(hasMSS) copystring(opts, "MS");
+        if(msaalight > 2) copystring(opts, "MS");
         else if(msaalight==2) copystring(opts, ghasstencil || !msaaedgedetect ? "MO" : "MOT");
         else formatstring(opts, ghasstencil || !msaaedgedetect ? "MR%d" : "MRT%d", msaasamples);
         deferredmsaasampleshader = loaddeferredlightshader(opts);
