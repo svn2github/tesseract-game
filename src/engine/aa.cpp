@@ -735,7 +735,7 @@ void disableaamask()
 
 bool multisampledaa()
 {
-    return msaasamples == 2 && (smaa ? smaaspatial : tqaa);
+    return msaasamples == 2 && (smaa ? msaalight && smaaspatial : tqaa);
 }
 
 bool maskedaa()
