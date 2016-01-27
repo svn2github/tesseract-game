@@ -332,6 +332,8 @@ void renderprogressview(int w, int h, float bar, const char *text)   // also use
     glDisable(GL_BLEND);
 }
 
+VAR(progressbackground, 0, 0, 1);
+
 void renderprogress(float bar, const char *text, bool background)   // also used during loading
 {
     if(!inbetweenframes || drawtex) return;
@@ -348,7 +350,7 @@ void renderprogress(float bar, const char *text, bool background)   // also used
     gettextres(w, h);
 
     extern int mesa_vsync_bug, curvsync;
-    bool forcebackground = mesa_vsync_bug && curvsync;
+    bool forcebackground = progressbackground || (mesa_vsync_bug && curvsync);
     if(background || forcebackground) restorebackground(w, h, forcebackground);
 
     renderprogressview(w, h, bar, text);
