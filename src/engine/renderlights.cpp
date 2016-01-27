@@ -3105,6 +3105,9 @@ void renderlights(float bsx1 = -1, float bsy1 = -1, float bsx2 = 1, float bsy2 =
     if(!depthtestlights) { glDisable(GL_DEPTH_TEST); depth = false; }
     else glDepthMask(GL_FALSE);
 
+    bindlighttexs(msaapass, transparent);
+    setlightglobals(transparent);
+
     gle::defvertex(3);
 
     bool avatar = useavatarmask() && !transparent && !drawtex;
@@ -3144,10 +3147,6 @@ void renderlights(float bsx1 = -1, float bsy1 = -1, float bsx2 = 1, float bsy2 =
     }
 
     if(!avatar) stencilref = -1;
-
-    bindlighttexs(msaapass, transparent);
-
-    setlightglobals(transparent);
 
     glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_BLEND);
