@@ -192,10 +192,10 @@ static void compileglslshader(Shader &s, GLenum type, GLuint &obj, const char *d
         {
             parts[numparts++] = "#define varying in\n";
             parts[numparts++] = (glslversion >= 330 || (glslversion >= 150 && hasEAL)) && !amd_eal_bug ?
-                "#define fragdata(loc, name, type) layout(location = loc) out type name;\n"
-                "#define blenddata(loc, name, type) layout(location = loc, index = 1) out type name;\n" :
-                "#define fragdata(loc, name, type) out type name;\n"
-                "#define blenddata(loc, name, type) out type name;\n";
+                "#define fragdata(loc) layout(location = loc) out\n"
+                "#define fragblend(loc) layout(location = loc, index = 1) out\n" :
+                "#define fragdata(loc) out\n"
+                "#define fragblend(loc) out\n";
             if(glslversion < 150)
             {
                 const char *decls = finddecls(source);
@@ -252,12 +252,11 @@ static void compileglslshader(Shader &s, GLenum type, GLuint &obj, const char *d
         if(hasEGPU4)
         {
             parts[numparts++] =
-                "#define fragdata(loc, name, type) varying out type name;\n"
-                "#define blenddata(loc, name, type) varying out type name;\n";
+                "#define fragdata(loc) varying out\n"
+                "#define fragblend(loc) varying out\n";
         }
         else
         {
-            parts[numparts++] = "#define fragdata(loc, name, type)\n";
             loopv(s.fragdatalocs)
             {
                 FragDataLoc &d = s.fragdatalocs[i];
@@ -399,50 +398,69 @@ static void linkglslprogram(Shader &s, bool msg = true)
     }
 }
 
-static void findfragdatalocs(Shader &s, const char *ps, const char *macroname, int index)
+static void findfragdatalocs(Shader &s, char *ps, const char *macroname, int index)
 {
+    int macrolen = strlen(macroname); 
+    bool clear = glslversion < 130 && !hasEGPU4;
     while((ps = strstr(ps, macroname)))
     {
-        int loc = strtol(ps + 9, (char **)&ps, 0);
+        char *start = ps;
+        int loc = strtol(ps + macrolen, (char **)&ps, 0);
         if(loc < 0 || loc > 3) continue;
 
-        ps += strspn(ps, ", \t\r\n");
-        const char *namestart = ps;
-        ps += strcspn(ps, "), \t\r\n");
-        string name;
-        int namelen = min(int(sizeof(name)-1), int(ps-namestart));
-        memcpy(name, namestart, namelen);
-        name[namelen++] = '\0';
-
-        ps += strspn(ps, ", \t\r\n");
+        ps += strspn(ps, ") \t\r\n");
         const char *type = ps;
-        ps += strcspn(ps, ") \t\r\n");
+        ps += strcspn(ps, "; \t\r\n");
         GLenum format = GL_FLOAT_VEC4;
-        if(ps > type)
+        switch(type[0])
         {
-            if(matchstring(type, ps-type, "vec3")) format = GL_FLOAT_VEC3;
-            else if(matchstring(type, ps-type, "vec2")) format = GL_FLOAT_VEC2;
-            else if(matchstring(type, ps-type, "float")) format = GL_FLOAT;
-            else if(matchstring(type, ps-type, "ivec4")) format = GL_INT_VEC4;
-            else if(matchstring(type, ps-type, "ivec3")) format = GL_INT_VEC3;
-            else if(matchstring(type, ps-type, "ivec2")) format = GL_INT_VEC2;
-            else if(matchstring(type, ps-type, "int")) format = GL_INT;
-            else if(matchstring(type, ps-type, "uvec4")) format = GL_UNSIGNED_INT_VEC4;
-            else if(matchstring(type, ps-type, "uvec3")) format = GL_UNSIGNED_INT_VEC3;
-            else if(matchstring(type, ps-type, "uvec2")) format = GL_UNSIGNED_INT_VEC2;
-            else if(matchstring(type, ps-type, "uint")) format = GL_UNSIGNED_INT;
+            case 'v':
+                if(matchstring(type, ps-type, "vec3")) format = GL_FLOAT_VEC3;
+                else if(matchstring(type, ps-type, "vec2")) format = GL_FLOAT_VEC2;
+                break;
+            case 'f':
+                if(matchstring(type, ps-type, "float")) format = GL_FLOAT;
+                break;
+            case 'i':
+                if(matchstring(type, ps-type, "ivec4")) format = GL_INT_VEC4;
+                else if(matchstring(type, ps-type, "ivec3")) format = GL_INT_VEC3;
+                else if(matchstring(type, ps-type, "ivec2")) format = GL_INT_VEC2;
+                else if(matchstring(type, ps-type, "int")) format = GL_INT;
+                break;
+            case 'u':
+                if(matchstring(type, ps-type, "uvec4")) format = GL_UNSIGNED_INT_VEC4;
+                else if(matchstring(type, ps-type, "uvec3")) format = GL_UNSIGNED_INT_VEC3;
+                else if(matchstring(type, ps-type, "uvec2")) format = GL_UNSIGNED_INT_VEC2;
+                else if(matchstring(type, ps-type, "uint")) format = GL_UNSIGNED_INT;
+                break;
         }
 
-        s.fragdatalocs.add(FragDataLoc(getshaderparamname(name), loc, format, index));
+        ps += strspn(ps, " \t\r\n");
+        const char *name = ps;
+        ps += strcspn(ps, "; \t\r\n");
+
+        if(ps > 0)
+        {
+            char end = *ps;
+            *ps = '\0';
+            s.fragdatalocs.add(FragDataLoc(getshaderparamname(name), loc, format, index));
+            *ps = end;
+        }
+
+        if(clear)
+        {
+            ps += strspn(ps, "; \t\r\n");
+            memset(start, ' ', ps - start);
+        }
     }
 }
 
-void findfragdatalocs(Shader &s, const char *psstr)
+void findfragdatalocs(Shader &s, char *psstr)
 {
     if(!psstr || ((glslversion >= 330 || (glslversion >= 150 && hasEAL)) && !amd_eal_bug)) return;
 
     findfragdatalocs(s, psstr, "fragdata(", 0);
-    if(maxdualdrawbufs) findfragdatalocs(s, psstr, "blenddata(", 1);
+    if(maxdualdrawbufs) findfragdatalocs(s, psstr, "fragblend(", 1);
 }
 
 int getlocalparam(const char *name)
@@ -799,7 +817,7 @@ Shader *newshader(int type, const char *name, const char *vs, const char *ps, Sh
     genuniformlocs(s, vs, ps, s.reusevs, s.reuseps);
     s.fragdatalocs.setsize(0);
     if(s.reuseps) s.fragdatalocs = s.reuseps->fragdatalocs;
-    else findfragdatalocs(s, ps);
+    else findfragdatalocs(s, s.psstr);
     if(!s.compile())
     {
         s.cleanup(true);
@@ -979,7 +997,7 @@ void setupshaders()
         "void main(void) {\n"
         "   gl_Position = vvertex;\n"
         "}\n",
-        "fragdata(0, fragcolor, vec4)\n"
+        "fragdata(0) vec4 fragcolor;\n"
         "void main(void) {\n"
         "   fragcolor = vec4(1.0, 0.0, 1.0, 1.0);\n"
         "}\n");
@@ -997,7 +1015,7 @@ void setupshaders()
         "uniform sampler2D tex0;\n"
         "varying vec2 texcoord0;\n"
         "varying vec4 colorscale;\n"
-        "fragdata(0, fragcolor, vec4)\n"
+        "fragdata(0) vec4 fragcolor;\n"
         "void main(void) {\n"
         "    vec4 color = texture2D(tex0, texcoord0);\n"
         "    fragcolor = colorscale * color;\n"
@@ -1017,7 +1035,7 @@ void setupshaders()
         "uniform vec4 textparams;\n"
         "varying vec2 texcoord0;\n"
         "varying vec4 colorscale;\n"
-        "fragdata(0, fragcolor, vec4)\n"
+        "fragdata(0) vec4 fragcolor;\n"
         "void main(void) {\n"
         "    float dist = texture2D(tex0, texcoord0).r;\n"
         "    float border = smoothstep(textparams.x, textparams.y, dist);\n"
@@ -1033,7 +1051,7 @@ void setupshaders()
         "    color = vcolor;\n"
         "}\n",
         "varying vec4 color;\n"
-        "fragdata(0, fragcolor, vec4)\n"
+        "fragdata(0) vec4 fragcolor;\n"
         "void main(void) {\n"
         "    fragcolor = color;\n"
         "}\n");
