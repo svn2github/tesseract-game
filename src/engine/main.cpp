@@ -349,8 +349,8 @@ void renderprogress(float bar, const char *text, bool background)   // also used
     getbackgroundres(w, h);
     gettextres(w, h);
 
-    extern int mesa_vsync_bug, curvsync;
-    bool forcebackground = progressbackground || (mesa_vsync_bug && curvsync);
+    extern int mesa_swap_bug, curvsync;
+    bool forcebackground = progressbackground || (mesa_swap_bug && (curvsync || totalmillis==1));
     if(background || forcebackground) restorebackground(w, h, forcebackground);
 
     renderprogressview(w, h, bar, text);

@@ -273,7 +273,7 @@ VAR(amd_eal_bug, 0, 0, 1);
 VAR(mesa_texrectoffset_bug, 0, 0, 1);
 VAR(intel_texalpha_bug, 0, 0, 1);
 VAR(intel_mapbufferrange_bug, 0, 0, 1);
-VAR(mesa_vsync_bug, 0, 0, 1);
+VAR(mesa_swap_bug, 0, 0, 1);
 VAR(useubo, 1, 0, 0);
 VAR(usetexgather, 1, 0, 0);
 VAR(usetexcompress, 1, 0, 0);
@@ -1044,7 +1044,7 @@ void gl_checkextensions()
             if(glversion <= 310) intel_mapbufferrange_bug = 1;
         }
     }
-    if(mesa) mesa_vsync_bug = 1;
+    if(mesa) mesa_swap_bug = 1;
     if(hasGPU5 && hasTG) tqaaresolvegather = 1;
 }
 
