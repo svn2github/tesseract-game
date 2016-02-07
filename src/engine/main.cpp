@@ -361,6 +361,8 @@ VARNP(relativemouse, userelativemouse, 0, 1, 1);
 
 bool shouldgrab = false, grabinput = false, minimized = false, canrelativemouse = true, relativemouse = false;
 int keyrepeatmask = 0, textinputmask = 0;
+Uint32 textinputtime = 0;
+VAR(textinputfilter, 0, 5, 1000);
 
 void keyrepeat(bool on, int mask)
 {
@@ -372,7 +374,11 @@ void textinput(bool on, int mask)
 {
     if(on)
     {
-        if(!textinputmask) SDL_StartTextInput();
+        if(!textinputmask)
+        {
+            SDL_StartTextInput();
+            textinputtime = SDL_GetTicks();
+        }
         textinputmask |= mask;
     }
     else
@@ -725,12 +731,13 @@ void checkinput()
                 return;
 
             case SDL_TEXTINPUT:
-            {
-                uchar buf[SDL_TEXTINPUTEVENT_TEXT_SIZE+1];
-                size_t len = decodeutf8(buf, sizeof(buf)-1, (const uchar *)event.text.text, strlen(event.text.text));
-                if(len > 0) { buf[len] = '\0'; processtextinput((const char *)buf, len); }
+                if(textinputmask && int(event.text.timestamp-textinputtime) >= textinputfilter)
+                {   
+                    uchar buf[SDL_TEXTINPUTEVENT_TEXT_SIZE+1];
+                    size_t len = decodeutf8(buf, sizeof(buf)-1, (const uchar *)event.text.text, strlen(event.text.text));
+                    if(len > 0) { buf[len] = '\0'; processtextinput((const char *)buf, len); }
+                }
                 break;
-            }
 
             case SDL_KEYDOWN:
             case SDL_KEYUP:
