@@ -441,7 +441,7 @@ extern int octaentsize;
 
 static octaentities *visiblemms, **lastvisiblemms;
 
-void findvisiblemms(const vector<extentity *> &ents)
+void findvisiblemms(const vector<extentity *> &ents, bool doquery)
 {
     visiblemms = NULL;
     lastvisiblemms = &visiblemms;
@@ -450,7 +450,7 @@ void findvisiblemms(const vector<extentity *> &ents)
         octaentities *oe = va->mapmodels[i];
         if(isfoggedcube(oe->o, oe->size) || pvsoccluded(oe->bbmin, oe->bbmax)) continue;
 
-        bool occluded = oe->query && oe->query->owner == oe && checkquery(oe->query);
+        bool occluded = doquery && oe->query && oe->query->owner == oe && checkquery(oe->query);
         if(occluded)
         {
             oe->distance = -1;
@@ -498,11 +498,10 @@ static inline void rendermapmodel(extentity &e)
 
 void rendermapmodels()
 {
-    const vector<extentity *> &ents = entities::getents();
-    findvisiblemms(ents);
-
     static int skipoq = 0;
-    bool doquery = oqfrags && oqmm;
+    bool doquery = !drawtex && oqfrags && oqmm;
+    const vector<extentity *> &ents = entities::getents();
+    findvisiblemms(ents, doquery);
 
     for(octaentities *oe = visiblemms; oe; oe = oe->next) if(oe->distance>=0)
     {
