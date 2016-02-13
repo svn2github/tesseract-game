@@ -270,7 +270,6 @@ void glerror(const char *file, int line, GLenum error)
 
 VAR(amd_pf_bug, 0, 0, 1);
 VAR(amd_eal_bug, 0, 0, 1);
-VAR(amd_cubemap_bug, 0, 0, 1);
 VAR(mesa_texrectoffset_bug, 0, 0, 1);
 VAR(intel_texalpha_bug, 0, 0, 1);
 VAR(intel_mapbufferrange_bug, 0, 0, 1);
@@ -1017,8 +1016,6 @@ void gl_checkextensions()
         if(checkseries(renderer, "Radeon HD", 4000, 5199)) amd_pf_bug = 1;
         if(glversion <= 330) amd_eal_bug = 1; // explicit_attrib_location broken when used with blend_func_extended on legacy Catalyst
         rhrect = 1; // bad cpu stalls on Catalyst 13.x when trying to use 3D textures previously bound to FBOs
-        // On Catalyst, issuing an occlusion query on the first draw using a given cubemap texture causes nasty stalls
-        amd_cubemap_bug = 1;
     }
     else if(nvidia)
     {
