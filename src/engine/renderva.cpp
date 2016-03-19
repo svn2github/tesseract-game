@@ -339,14 +339,28 @@ void clearqueries()
     loopi(MAXQUERYFRAMES) queryframes[i].cleanup();
 }
 
+VARF(oqany, 0, 0, 2, clearqueries());
 VAR(oqfrags, 0, 8, 64);
 VAR(oqwait, 0, 1, 1);
 
+static inline GLenum querytarget()
+{
+    return oqany && hasOQ2 ? (oqany > 1 && hasES3 ? GL_ANY_SAMPLES_PASSED_CONSERVATIVE : GL_ANY_SAMPLES_PASSED) : GL_SAMPLES_PASSED;
+}
+
+void startquery(occludequery *query)
+{
+    glBeginQuery_(querytarget(), query->id);
+}
+
+void endquery(occludequery *query)
+{
+    glEndQuery_(querytarget());
+}
+
 bool checkquery(occludequery *query, bool nowait)
 {
-    GLuint fragments;
-    if(query->fragments >= 0) fragments = query->fragments;
-    else
+    if(query->fragments < 0)
     {
         if(nowait || !oqwait)
         {
@@ -354,10 +368,12 @@ bool checkquery(occludequery *query, bool nowait)
             glGetQueryObjectiv_(query->id, GL_QUERY_RESULT_AVAILABLE, &avail);
             if(!avail) return false;
         }
+     
+        GLuint fragments;   
         glGetQueryObjectuiv_(query->id, GL_QUERY_RESULT, &fragments);
-        query->fragments = fragments;
+        query->fragments = querytarget() == GL_SAMPLES_PASSED || !fragments ? int(fragments) : oqfrags;
     }
-    return fragments < uint(oqfrags);
+    return query->fragments < oqfrags;
 }
 
 static GLuint bbvbo = 0, bbebo = 0;
