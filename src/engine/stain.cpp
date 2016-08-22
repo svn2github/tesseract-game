@@ -421,6 +421,8 @@ struct stainrenderer
 
     void addstain(const vec &center, const vec &dir, float radius, const bvec &color, int info)
     {
+        if(dir.iszero()) return;
+
         bbmin = ivec(center).sub(radius);
         bbmax = ivec(center).add(radius).add(1);
 
