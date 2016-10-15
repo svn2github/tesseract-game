@@ -866,6 +866,13 @@ __attribute__((dllexport))
 __declspec(dllexport)
 #endif
     DWORD NvOptimusEnablement = 1;
+
+#ifdef __GNUC__
+__attribute__((dllexport))
+#else
+__declspec(dllexport)
+#endif
+    int AmdPowerXpressRequestHighPerformance = 1;
 }
 #endif
 
