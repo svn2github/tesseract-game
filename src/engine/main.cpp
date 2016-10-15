@@ -872,7 +872,7 @@ __attribute__((dllexport))
 #else
 __declspec(dllexport)
 #endif
-    int AmdPowerXpressRequestHighPerformance = 1;
+    DWORD AmdPowerXpressRequestHighPerformance = 1;
 }
 #endif
 
