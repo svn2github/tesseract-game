@@ -747,13 +747,13 @@ void Shader::cleanup(bool full)
 
 static void genattriblocs(Shader &s, const char *vs, const char *ps, Shader *reusevs, Shader *reuseps)
 {
-    static int len = strlen("#pragma CUBE2_attrib");
+    static int len = strlen("//:attrib");
     string name;
     int loc;
     if(reusevs) s.attriblocs = reusevs->attriblocs;
-    else while((vs = strstr(vs, "#pragma CUBE2_attrib")))
+    else while((vs = strstr(vs, "//:attrib")))
     {
-        if(sscanf(vs, "#pragma CUBE2_attrib %100s %d", name, &loc) == 2)
+        if(sscanf(vs, "//:attrib %100s %d", name, &loc) == 2)
             s.attriblocs.add(AttribLoc(getshaderparamname(name), loc));
         vs += len;
     }
@@ -761,13 +761,13 @@ static void genattriblocs(Shader &s, const char *vs, const char *ps, Shader *reu
 
 static void genuniformlocs(Shader &s, const char *vs, const char *ps, Shader *reusevs, Shader *reuseps)
 {
-    static int len = strlen("#pragma CUBE2_uniform");
+    static int len = strlen("//:uniform");
     string name, blockname;
     int binding, stride;
     if(reusevs) s.uniformlocs = reusevs->uniformlocs;
-    else while((vs = strstr(vs, "#pragma CUBE2_uniform")))
+    else while((vs = strstr(vs, "//:uniform")))
     {
-        int numargs = sscanf(vs, "#pragma CUBE2_uniform %100s %100s %d %d", name, blockname, &binding, &stride);
+        int numargs = sscanf(vs, "//:uniform %100s %100s %d %d", name, blockname, &binding, &stride);
         if(numargs >= 3) s.uniformlocs.add(UniformLoc(getshaderparamname(name), getshaderparamname(blockname), binding, numargs >= 4 ? stride : 0));
         else if(numargs >= 1) s.uniformlocs.add(UniformLoc(getshaderparamname(name)));
         vs += len;
@@ -844,10 +844,10 @@ static void gengenericvariant(Shader &s, const char *sname, const char *vs, cons
     vsv.put(vs, strlen(vs)+1);
     psv.put(ps, strlen(ps)+1);
 
-    static const int len = strlen("#pragma CUBE2_variant"), olen = strlen("override");
+    static const int len = strlen("//:variant"), olen = strlen("override");
     for(char *vspragma = vsv.getbuf();; vschanged = true)
     {
-        vspragma = strstr(vspragma, "#pragma CUBE2_variant");
+        vspragma = strstr(vspragma, "//:variant");
         if(!vspragma) break;
         if(sscanf(vspragma + len, "row %d", &rowoffset) == 1) continue;
         memset(vspragma, ' ', len);
@@ -864,7 +864,7 @@ static void gengenericvariant(Shader &s, const char *sname, const char *vs, cons
     }
     for(char *pspragma = psv.getbuf();; pschanged = true)
     {
-        pspragma = strstr(pspragma, "#pragma CUBE2_variant");
+        pspragma = strstr(pspragma, "//:variant");
         if(!pspragma) break;
         if(sscanf(pspragma + len, "row %d", &rowoffset) == 1) continue;
         memset(pspragma, ' ', len);
@@ -891,9 +891,9 @@ static void gengenericvariant(Shader &s, const char *sname, const char *vs, cons
 
 static void genfogshader(vector<char> &vsbuf, vector<char> &psbuf, const char *vs, const char *ps)
 {
-    const char *vspragma = strstr(vs, "#pragma CUBE2_fog"), *pspragma = strstr(ps, "#pragma CUBE2_fog");
+    const char *vspragma = strstr(vs, "//:fog"), *pspragma = strstr(ps, "//:fog");
     if(!vspragma && !pspragma) return;
-    static const int pragmalen = strlen("#pragma CUBE2_fog");
+    static const int pragmalen = strlen("//:fog");
     const char *vsmain = findglslmain(vs), *vsend = strrchr(vs, '}');
     if(vsmain && vsend)
     {
@@ -1140,11 +1140,11 @@ void shader(int *type, char *name, char *vs, char *ps)
         if(psbuf.length()) ps = psbuf.getbuf(); \
     }
     GENSHADER(slotparams.length(), genuniformdefs(vsbuf, psbuf, vs, ps));
-    GENSHADER(strstr(vs, "#pragma CUBE2_fog") || strstr(ps, "#pragma CUBE2_fog"), genfogshader(vsbuf, psbuf, vs, ps));
+    GENSHADER(strstr(vs, "//:fog") || strstr(ps, "//:fog"), genfogshader(vsbuf, psbuf, vs, ps));
     Shader *s = newshader(*type, name, vs, ps);
     if(s)
     {
-        if(strstr(ps, "#pragma CUBE2_variant") || strstr(vs, "#pragma CUBE2_variant")) gengenericvariant(*s, name, vs, ps);
+        if(strstr(ps, "//:variant") || strstr(vs, "//:variant")) gengenericvariant(*s, name, vs, ps);
     }
     slotparams.shrink(0);
 }
@@ -1170,11 +1170,11 @@ void variantshader(int *type, char *name, int *row, char *vs, char *ps, int *max
     }
     vector<char> vsbuf, psbuf, vsbak, psbak;
     GENSHADER(s->defaultparams.length(), genuniformdefs(vsbuf, psbuf, vs, ps, s));
-    GENSHADER(strstr(vs, "#pragma CUBE2_fog") || strstr(ps, "#pragma CUBE2_fog"), genfogshader(vsbuf, psbuf, vs, ps));
+    GENSHADER(strstr(vs, "//:fog") || strstr(ps, "//:fog"), genfogshader(vsbuf, psbuf, vs, ps));
     Shader *v = newshader(*type, varname, vs, ps, s, *row);
     if(v)
     {
-        if(strstr(ps, "#pragma CUBE2_variant") || strstr(vs, "#pragma CUBE2_variant")) gengenericvariant(*s, varname, vs, ps, *row);
+        if(strstr(ps, "//:variant") || strstr(vs, "//:variant")) gengenericvariant(*s, varname, vs, ps, *row);
     }
 }
 COMMAND(variantshader, "isissi");
