@@ -3341,6 +3341,24 @@ void concatword(tagval *v, int n)
 }
 COMMAND(concatword, "V");
 
+void append(ident *id, tagval *v, bool space)
+{
+    if(id->type != ID_ALIAS || v->type == VAL_NULL) return;
+    if(id->valtype == VAL_NULL)
+    {
+        if(id->index < MAXARGS) setarg(*id, *v); else setalias(*id, *v);
+        v->type = VAL_NULL;
+    }
+    else
+    {
+        tagval r;
+        r.setstr(conc(v, 1, space, id->getstr()));
+        if(id->index < MAXARGS) setarg(*id, r); else setalias(*id, r);
+    }
+}
+ICOMMAND(append, "rT", (ident *id, tagval *v), append(id, v, true));
+ICOMMAND(appendword, "rT", (ident *id, tagval *v), append(id, v, false));
+
 void result(tagval &v)
 {
     *commandret = v;
