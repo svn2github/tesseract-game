@@ -1487,13 +1487,17 @@ namespace UI
             gle::end();
         }
 
+        void bindtex()
+        {
+            changedraw();
+            if(lasttex != tex) { if(lasttex) gle::end(); lasttex = tex; glBindTexture(GL_TEXTURE_2D, tex->id); }
+        }
+
         void draw(float sx, float sy)
         {
             if(tex != notexture)
             {
-                changedraw();
-                if(lasttex != tex) { if(lasttex) gle::end(); lasttex = tex; glBindTexture(GL_TEXTURE_2D, tex->id); }
-
+                bindtex();
                 quads(sx, sy, w, h);
             }
 
@@ -1528,9 +1532,7 @@ namespace UI
         {
             if(tex == notexture) { Object::draw(sx, sy); return; }
 
-            changedraw();
-            if(lasttex != tex) { if(lasttex) gle::end(); lasttex = tex; glBindTexture(GL_TEXTURE_2D, tex->id); }
-
+            bindtex();
             quads(sx, sy, w, h, cropx, cropy, cropw, croph);
 
             Object::draw(sx, sy);
@@ -1563,8 +1565,7 @@ namespace UI
         {
             if(tex == notexture) { Object::draw(sx, sy); return; }
 
-            changedraw();
-            if(lasttex != tex) { if(lasttex) gle::end(); lasttex = tex; glBindTexture(GL_TEXTURE_2D, tex->id); }
+            bindtex();
 
             float splitw = (minw ? min(minw, w) : w) / 2,
                   splith = (minh ? min(minh, h) : h) / 2,
@@ -1635,8 +1636,7 @@ namespace UI
         {
             if(tex == notexture) { Object::draw(sx, sy); return; }
 
-            changedraw();
-            if(lasttex != tex) { if(lasttex) gle::end(); lasttex = tex; glBindTexture(GL_TEXTURE_2D, tex->id); }
+            bindtex();
 
             float vy = sy, ty = 0;
             loopi(3)
@@ -1695,8 +1695,7 @@ namespace UI
         {
             if(tex == notexture) { Object::draw(sx, sy); return; }
 
-            changedraw();
-            if(lasttex != tex) { if(lasttex) gle::end(); lasttex = tex; glBindTexture(GL_TEXTURE_2D, tex->id); }
+            bindtex();
 
             if(tex->clamp)
             {
