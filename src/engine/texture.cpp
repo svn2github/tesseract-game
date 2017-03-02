@@ -1052,11 +1052,10 @@ static bool alphaformat(GLenum format)
 
 int texalign(const void *data, int w, int bpp)
 {
-    size_t address = size_t(data) | (w*bpp);
-    if(address&1) return 1;
-    if(address&2) return 2;
-    if(address&4) return 4;
-    return 8;
+    int stride = w*bpp;
+    if(stride&1) return 1;
+    if(stride&2) return 2;
+    return 4;
 }
 
 bool floatformat(GLenum format)
