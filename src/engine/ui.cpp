@@ -785,6 +785,7 @@ namespace UI
                 if(!children.inrange(i)) break;
                 if(children[i] != w) i--;
             });
+            resetstate();
         }
 
         bool show(Window *w)
