@@ -3040,6 +3040,7 @@ namespace UI
             loopk(4) { tc[k].x = tc[k].x/xt - float(xoff)/t->xs; tc[k].y = tc[k].y/yt - float(yoff)/t->ys; }
             glBindTexture(GL_TEXTURE_2D, t->id);
             if(slot.loaded) gle::color(vslot.colorscale);
+            else gle::colorf(1, 1, 1);
             quad(x, y, w, h, tc);
             if(detailtex)
             {
