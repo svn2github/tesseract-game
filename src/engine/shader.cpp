@@ -439,7 +439,7 @@ static void findfragdatalocs(Shader &s, char *ps, const char *macroname, int ind
         const char *name = ps;
         ps += strcspn(ps, "; \t\r\n");
 
-        if(ps > 0)
+        if(ps > name)
         {
             char end = *ps;
             *ps = '\0';
