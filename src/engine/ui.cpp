@@ -3089,7 +3089,7 @@ namespace UI
     ICOMMAND(newui, "ssss", (char *name, char *contents, char *onshow, char *onhide),
     {
         Window *window = windows.find(name, NULL);
-        if(window) { world->hide(window); windows.remove(name); delete window; }
+        if(window) { if (window == UI::window) return; world->hide(window); windows.remove(name); delete window; }
         windows[name] = new Window(name, contents, onshow, onhide);
     });
 
