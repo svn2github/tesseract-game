@@ -176,7 +176,6 @@
 		D1FCB11318832B7500AFC227 /* rendersky.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = rendersky.cpp; sourceTree = "<group>"; };
 		D1FCB11418832B7500AFC227 /* rendertext.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = rendertext.cpp; sourceTree = "<group>"; };
 		D1FCB11518832B7500AFC227 /* renderva.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = renderva.cpp; sourceTree = "<group>"; };
-		D1FCB11618832B7500AFC227 /* scale.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = scale.h; sourceTree = "<group>"; };
 		D1FCB11718832B7500AFC227 /* server.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = server.cpp; sourceTree = "<group>"; };
 		D1FCB11818832B7500AFC227 /* serverbrowser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = serverbrowser.cpp; sourceTree = "<group>"; };
 		D1FCB11918832B7500AFC227 /* shader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = shader.cpp; sourceTree = "<group>"; };
@@ -414,7 +413,6 @@
 				D1FCB11318832B7500AFC227 /* rendersky.cpp */,
 				D1FCB11418832B7500AFC227 /* rendertext.cpp */,
 				D1FCB11518832B7500AFC227 /* renderva.cpp */,
-				D1FCB11618832B7500AFC227 /* scale.h */,
 				D1FCB11718832B7500AFC227 /* server.cpp */,
 				D1FCB11818832B7500AFC227 /* serverbrowser.cpp */,
 				D1FCB11918832B7500AFC227 /* shader.cpp */,
