@@ -1082,7 +1082,7 @@ COMMAND(defershader, "iss");
 
 void Shader::force()
 {
-    if(!deferred()) return;
+    if(!deferred() || !defer) return;
 
     char *cmd = defer;
     defer = NULL;
