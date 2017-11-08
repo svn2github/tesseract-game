@@ -1517,6 +1517,7 @@ void cleanupshaders()
 {
     cleanuppostfx(true);
 
+    loadedshaders = false;
     nullshader = hudshader = hudnotextureshader = NULL;
     enumerate(shaders, Shader, s, s.cleanup());
     Shader::lastshader = NULL;
