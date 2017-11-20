@@ -374,8 +374,8 @@ struct iqm : skelmodel, skelloader<iqm>
 
     bool loaddefaultparts()
     {
+        flushpart();
         skelpart &mdl = addpart();
-        adjustments.setsize(0);
         const char *fname = name + strlen(name);
         do --fname; while(fname >= name && *fname!='/' && *fname!='\\');
         fname++;
@@ -396,6 +396,7 @@ struct iqm : skelmodel, skelloader<iqm>
         identflags &= ~IDF_PERSIST;
         if(execfile(cfgname, false) && parts.length()) // configured iqm, will call the iqm* commands below
         {
+            flushpart();
             identflags |= IDF_PERSIST;
             loading = NULL;
             loopv(parts) if(!parts[i]->meshes) return false;

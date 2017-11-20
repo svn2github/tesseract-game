@@ -411,8 +411,8 @@ struct smd : skelmodel, skelloader<smd>
 
     bool loaddefaultparts()
     {
+        flushpart();
         skelpart &mdl = addpart();
-        adjustments.setsize(0);
         const char *fname = name + strlen(name);
         do --fname; while(fname >= name && *fname!='/' && *fname!='\\');
         fname++;
@@ -433,6 +433,7 @@ struct smd : skelmodel, skelloader<smd>
         identflags &= ~IDF_PERSIST;
         if(execfile(cfgname, false) && parts.length()) // configured smd, will call the smd* commands below
         {
+            flushpart();
             identflags |= IDF_PERSIST;
             loading = NULL;
             loopv(parts) if(!parts[i]->meshes) return false;

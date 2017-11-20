@@ -396,8 +396,8 @@ struct md5 : skelmodel, skelloader<md5>
 
     bool loaddefaultparts()
     {
+        flushpart();
         skelpart &mdl = addpart();
-        adjustments.setsize(0);
         const char *fname = name + strlen(name);
         do --fname; while(fname >= name && *fname!='/' && *fname!='\\');
         fname++;
@@ -420,6 +420,7 @@ struct md5 : skelmodel, skelloader<md5>
         identflags &= ~IDF_PERSIST;
         if(execfile(cfgname, false) && parts.length()) // configured md5, will call the md5* commands below
         {
+            flushpart();
             identflags |= IDF_PERSIST;
             loading = NULL;
             loopv(parts) if(!parts[i]->meshes) return false;
