@@ -25,9 +25,9 @@ struct md5hierarchy
     int parent, flags, start;
 };
 
-struct md5 : skelmodel, skelloader<md5>
+struct md5 : skelloader<md5>
 {
-    md5(const char *name) : skelmodel(name) {}
+    md5(const char *name) : skelloader(name) {}
 
     static const char *formatname() { return "md5"; }
     int type() const { return MDL_MD5; }
@@ -396,7 +396,6 @@ struct md5 : skelmodel, skelloader<md5>
 
     bool loaddefaultparts()
     {
-        flushpart();
         skelpart &mdl = addpart();
         const char *fname = name + strlen(name);
         do --fname; while(fname >= name && *fname!='/' && *fname!='\\');
@@ -408,34 +407,6 @@ struct md5 : skelmodel, skelloader<md5>
         mdl.initskins();
         defformatstring(animname, "media/model/%s/%s.md5anim", name, fname);
         ((md5meshgroup *)mdl.meshes)->loadanim(path(animname));
-        return true;
-    }
-
-    bool load()
-    {
-        formatstring(dir, "media/model/%s", name);
-        defformatstring(cfgname, "media/model/%s/md5.cfg", name);
-
-        loading = this;
-        identflags &= ~IDF_PERSIST;
-        if(execfile(cfgname, false) && parts.length()) // configured md5, will call the md5* commands below
-        {
-            flushpart();
-            identflags |= IDF_PERSIST;
-            loading = NULL;
-            loopv(parts) if(!parts[i]->meshes) return false;
-        }
-        else // md5 without configuration, try default tris and skin
-        {
-            identflags |= IDF_PERSIST;
-            if(!loaddefaultparts())
-            {
-                loading = NULL;
-                return false;
-            }
-            loading = NULL;
-        }
-        loaded();
         return true;
     }
 };
