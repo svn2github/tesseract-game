@@ -4534,6 +4534,8 @@ void workinoq()
 FVAR(refractmargin, 0, 0.1f, 1);
 FVAR(refractdepth, 1e-3f, 16, 1e3f);
 
+int transparentlayer = 0;
+
 void rendertransparent()
 {
     int hasalphavas = findalphavas();
@@ -4637,6 +4639,8 @@ void rendertransparent()
             continue;
         }
 
+        transparentlayer = layer+1;
+
         allsx1 = min(allsx1, sx1);
         allsy1 = min(allsy1, sy1);
         allsx2 = max(allsx2, sx2);
@@ -4709,6 +4713,8 @@ void rendertransparent()
             break;
         }
     }
+
+    transparentlayer = 0;
 
     if(ghasstencil) glDisable(GL_STENCIL_TEST);
 
