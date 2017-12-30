@@ -36,6 +36,7 @@ void loadshaders()
     if(!nullshader || !hudshader || !hudtextshader || !hudnotextureshader || !stdworldshader) fatal("cannot find shader definitions");
 
     dummyslot.shader = stdworldshader;
+    dummydecalslot.shader = nullshader;
 
     nocolorshader = lookupshaderbyname("nocolor");
     foggedshader = lookupshaderbyname("fogged");
