@@ -16,6 +16,11 @@ void validmapname(char *dst, const char *src, const char *prefix = NULL, const c
     else if(dst != alt) copystring(dst, alt, maxlen);
 }
 
+void fixmapname(char *name)
+{
+    validmapname(name, name, NULL, "");
+}
+
 static void fixent(entity &e, int version)
 {
     if(version <= 0)

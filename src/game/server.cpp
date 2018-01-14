@@ -3133,6 +3133,7 @@ namespace server
             {
                 getstring(text, p);
                 filtertext(text, text, false);
+                fixmapname(text);
                 int reqmode = getint(p);
                 vote(text, reqmode, sender);
                 break;
