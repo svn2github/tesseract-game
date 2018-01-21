@@ -155,7 +155,7 @@ void setmapfilenames(const char *fname, const char *cname = NULL)
         formatstring(bakname, "media/map/%s_%s.BAK", name, baktime);
     }
 
-    validmapname(name, cname);
+    validmapname(name, cname ? cname : fname);
     formatstring(cfgname, "media/map/%s.cfg", name);
 
     path(ogzname);
