@@ -2685,7 +2685,7 @@ namespace server
         else if(matchstring(cmd, cmdlen, "cleargbans"))
             gbans.clear();
         else if(sscanf(cmd, "addgban %100s", val) == 1)
-            ipbans.add(val);
+            gbans.add(val);
     }
 
     void receivefile(int sender, uchar *data, int len)
