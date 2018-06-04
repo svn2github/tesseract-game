@@ -2977,6 +2977,7 @@ namespace server
             {
                 int gunselect = getint(p);
                 if(!cq || cq->state.state!=CS_ALIVE || !validgun(gunselect)) break;
+                cq->state.gunselect = gunselect;
                 QUEUE_AI;
                 QUEUE_MSG;
                 break;
